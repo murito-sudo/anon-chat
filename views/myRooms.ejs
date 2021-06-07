@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>myRooms</title>
+	<link rel="stylesheet" type="text/css" href="rooms.css">
+	<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+	     <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
+      integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4="
+      crossorigin="anonymous"
+    ></script>
+
+</head>
+<body>
+	<div>
+
+	<h1 id="title">aaaa</h1>
+	
+	<button type="submit" name="other" id="other">See Other Rooms</button>
+	<button type="submit" id="myRooms" name="mine" id="seeRooms">See My Rooms</button>
+	<button type="submit" name="favorites">See My Favorites</button>
+
+
+
+	<button type="submit" id="create">Create A room</button>
+
+	<br>
+	<input type="text" name="finder" placeholder="Type Room Name" class="finder" id="finder" onkeyup="myFunction()">
+
+
+	<h1 id="rooms" style="margin-bottom: 50px">Your Rooms: </h1>
+
+
+	<div class="card" id="card-section">
+
+
+
+
+	</div>
+
+	</div>
+
+
+
+	<script type="text/javascript" charset="utf-8" async defer>
+
+		let title = document.getElementById("title");
+		let yourRooms = document.getElementById("rooms");
+		let card = document.getElementById("card-section");
+		let newDiv = document.createElement("div");
+		let newH1 = document.createElement("h1");
+		let newP1 = document.createElement("p");
+		let newP2 = document.createElement("p");
+		let newBut = document.createElement("button");
+		let finder = document.getElementById("finder");
+		let filter =  finder.value.toUpperCase();
+		let headerRoom, roomBox, numberOfRooms;
+		newBut.innerHTML = "Join";
+		newBut.classList.add("respButn");
+		newDiv.classList.add("roomBox");
+		newH1.classList.add("headerRoom");
+		var mRooms = [];
+
+
+		socket.emit("Overload");
+		socket.on("yourRooms", ({username, rooms}) => { 
+
+			
+
+			title.innerHTML = username;
+			if(rooms.length === 0){
+				yourRooms.innerHTML = "You have no rooms.";
+			}else{
+				mRooms = rooms;
+				yourRooms.innerHTML = "Your rooms: ";
+				for(let x = 0; x < rooms.length; x++){
+
+					let descript = rooms[x].roomDescription.substring(0, 100);
+					newH1.innerHTML = rooms[x].roomName;
+					newP1.innerHTML = descript;
+					newP2.innerHTML = rooms[x].usersOnline + "/" + rooms[x].slots;
+					newDiv.appendChild(newH1);
+					newDiv.appendChild(newH1);
+					newDiv.appendChild(newP1);
+					newDiv.appendChild(newP2);
+					newDiv.appendChild(newBut);
+					card.appendChild(newDiv);
+					newDiv = document.createElement("div");
+					newH1 = document.createElement("h1");
+					newP1 = document.createElement("p");
+					newP2 = document.createElement("p");
+					newBut = document.createElement("button");
+					newDiv.classList.add("roomBox");
+					newH1.classList.add("headerRoom");
+					newBut.innerHTML = "Join";
+					newBut.classList.add("respButn");
+					newBut.classList.add("selector");
+
+
+				
+				}
+
+
+
+					headerRoom = document.querySelectorAll(".headerRoom");
+					roomBox = document.querySelectorAll(".roomBox");
+					numberOfRooms =  document.querySelectorAll(".respButn").length;
+
+
+
+
+				for(let i = 0; i < numberOfRooms; i++){
+
+
+					document.querySelectorAll(".respButn")[i].addEventListener("click", function(){
+
+						if(mRooms[i].usersOnline === mRooms[i].slots){
+							console.log("Room is full");
+
+						}else{
+							let target = mRooms[i]._id;
+							let admin = username;
+			
+							let index = Number(i);
+
+							console.log(admin);
+
+					
+							mRooms[i].usersOnline = mRooms[i].usersOnline + 1;
+							socket.emit("enterRooms",  {target, index, admin});
+							$('body').load("/chat");
+
+						}
+
+					});
+
+				}
+
+
+
+
+			}
+
+
+
+
+
+
+		});	
+
+
+		function myFunction(){
+			filter =  finder.value.toUpperCase();
+
+
+			for(let x = 0; x < roomBox.length; x++){
+
+						
+				if (headerRoom[x].innerHTML.toUpperCase().indexOf(filter) > -1) {
+			      		roomBox[x].style.display = "";
+
+			    } else {
+			      		roomBox[x].style.display = "none";
+			   		}
+			   		
+
+				}
+
+		}
+
+		 document.getElementById("create").addEventListener("click", function(){
+          
+       	  
+          $('body').load("/createRoom");
+           
+        
+        });
+
+
+
+		 document.getElementById("other").addEventListener("click", function(){
+          
+       	  $('body').load("/other");
+
+           
+        
+        });
+
+
+
+
+
+
+	</script>
+
+
+</body>
+</html>

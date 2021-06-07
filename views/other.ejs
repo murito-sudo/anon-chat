@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="rooms.css">
+	<title>Other rooms</title>
+	<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+
+</head>
+<body>
+
+	<div>
+		
+		<h1 id="title">Room Menu:</h1>
+	
+		<button type="submit" name="other">See Other Rooms</button>
+		<button type="submit" id="myRooms" name="mine">See My Rooms</button>
+		<button type="submit" name="favorites">See My Favorites</button>
+
+
+		<br>
+		<input type="text" name="finder" placeholder="Type Room Name" class="finder" id="finder" onkeyup="myFunction()">
+		<button type="button" class="refreshButton" style="width: 10%;" onClick="refresh()">Refresh</button>
+		
+		<br>
+		<label>Sort by: </label>
+
+		<select name="sort" onChange="changeSort()">
+			<option value="name">Name</option>
+			<option value="users">Users online</option>
+
+		</select>
+
+		
+
+		<br>
+		<br>
+
+		<div class="card" id="card-section">
+
+
+
+
+		</div>
+	</div>
+
+
+
+	<script>
+
+		let title = document.getElementById("title");
+		let yourRooms = document.getElementById("rooms");
+		let card = document.getElementById("card-section");
+		let finder = document.getElementById("finder");
+		let filter =  finder.value.toUpperCase();
+		let option = document.getElementsByTagName("select");
+		let select = document.getElementById("selectSort");
+
+
+		let roomBox;
+		let headerRoom;
+		let description;
+		let totalUsers;
+		let buttons;
+
+		let newDiv;
+		let newH1;
+		let newP1;
+		let newP2;
+		let newBut;
+		let newField;
+		let numberOfRooms = 0;
+
+		var rooms = [];
+		socket.emit("OverloadRooms");
+
+		socket.on("showAll", (allRooms) => {
+
+			rooms = allRooms;
+
+
+			for(let x = 0; x < rooms.length; x++){
+					newDiv = document.createElement("div");
+					newH1 = document.createElement("h1");
+					newP1 = document.createElement("p");
+					newP2 = document.createElement("p");
+					newBut = document.createElement("button");
+					
+					
+					let descript = allRooms[x].roomDescription.substring(0, 100);
+					newH1.innerHTML = allRooms[x].roomName;
+					newP1.innerHTML = descript;
+					newP2.innerHTML = allRooms[x].usersOnline + "/" + allRooms[x].slots;
+					newDiv.appendChild(newH1);
+					newDiv.appendChild(newH1);
+					newDiv.appendChild(newP1);
+					newDiv.appendChild(newP2);
+					if(allRooms[x].roomPassword.trim() !== ""){
+						newField = document.createElement("input");
+						newDiv.appendChild(newField);
+						newField.classList.add("passField");
+					}
+
+
+					newDiv.appendChild(newBut);
+					card.appendChild(newDiv);
+					newBut.innerHTML = "Join";
+					newDiv.classList.add("roomBox");
+					newH1.classList.add("headerRoom");
+					newBut.classList.add("respButn");
+					newBut.classList.add("selector");
+					newP1.classList.add("description");
+					newP2.classList.add("totalUsers");
+
+					
+
+			}
+
+
+
+				numberOfRooms =  document.querySelectorAll(".selector").length;
+				roomBox = document.querySelectorAll(".roomBox");
+				headerRoom = document.querySelectorAll(".headerRoom");
+				description = document.querySelectorAll(".description");
+				totalUsers = document.querySelectorAll(".totalUsers");
+				buttons = document.querySelectorAll(".selector");
+
+			    for(let i = 0; i < numberOfRooms; i++){
+
+					document.querySelectorAll(".selector")[i].addEventListener("click", function(){
+
+						if(rooms[i].usersOnline === rooms[i].slots){
+							console.log("Room is full");
+
+						}else{
+							if(rooms[i].roomPassword === ""){
+								let target = rooms[i]._id;
+									let admin = rooms[i].roomAdmin;
+									let index = Number(i);
+									let windowBool = 0;
+									rooms[i].usersOnline = rooms[i].usersOnline + 1;
+									socket.emit("enterRooms",  {target, index, admin});
+									$('body').load("/chat");
+								}else{
+
+									if(rooms[i].roomPassword.trim() !== ""){
+										let passField = document.getElementsByClassName("roomBox")[i].getElementsByClassName("passField")[0];
+							
+									
+
+										if(String(passField.value) === String(rooms[i].roomPassword)){
+											let target = rooms[i]._id;
+											let admin = rooms[i].roomAdmin;
+											let index = Number(i);
+											let windowBool = 0;
+											rooms[i].usersOnline = rooms[i].usersOnline + 1;
+											socket.emit("enterRooms",  {target, index, admin});
+											$('body').load("/chat");
+
+										}else{
+											console.log("Incorrect password");
+										}
+										
+
+
+									}
+
+								}
+						
+
+						}
+
+					});
+
+				}
+
+		
+		});
+
+
+
+		function myFunction(){
+			filter =  finder.value.toUpperCase();
+
+			
+			for(let x = 0; x < roomBox.length; x++){
+
+						
+				if (headerRoom[x].innerHTML.toUpperCase().indexOf(filter) > -1) {
+			      		roomBox[x].style.display = "";
+
+			    } else {
+			      		roomBox[x].style.display = "none";
+			   		}
+			   		
+				}
+
+		}
+
+
+		function changeSort(){
+
+			let saver = [];
+			if(option[0].value === "name"){
+
+				refresh();
+			
+			}else if(option[0].value === "users"){
+				rooms.sort(function (a, b) {
+				  if (a.usersOnline < b.usersOnline) {
+
+				    return 1;
+				  }
+				  if (a.usersOnline > b.usersOnline) {
+
+				    return -1;
+				  }
+				  // a must be equal to b
+				  return 0;
+				});
+
+
+				for(let x = 0; x < roomBox.length; x++){
+					
+					let descript = rooms[x].roomDescription.substring(0, 100);
+					headerRoom[x].innerHTML = rooms[x].roomName;
+					description[x].innerHTML = descript;
+					totalUsers[x].innerHTML = rooms[x].usersOnline + "/" + rooms[x].slots;
+
+					
+				}
+
+			}
+				
+		}
+
+		function refresh(){
+			$('body').load("/other");
+		}
+
+		
+
+		document.getElementById("myRooms").addEventListener("click", function(){
+        
+          $('body').load("/myRooms");
+           
+        });
+
+	</script>
+
+</body>
+</html>

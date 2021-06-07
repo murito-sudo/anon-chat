@@ -1,0 +1,210 @@
+html, body{
+	background-color: #423636 !important;
+	color: white;
+  overflow-x: hidden;
+}
+
+
+div{
+	text-align: center
+}
+
+button {
+  cursor: pointer;
+  outline: none;
+  border: none;
+  background-color: #423636;
+  width: 400px;
+  height: 70px;
+  border-radius: 30px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text);
+  background-size: 100% 100%;
+  box-shadow: 0 0 0 7px var(--light) inset;
+  margin-bottom: 15px;
+}
+
+
+.finder{
+  width: 50%;
+  height: 50px;
+  border-radius: 5px;
+}
+
+
+.card{
+  background-color: #423636;
+  width: 95%;
+  margin-left: 20px;
+  display: grid;
+  grid-template-columns: 33.3% 33.3% 33.3%;
+
+
+}
+
+.card div{
+  background-color: white;
+  padding: 8px;
+  border-style: solid;
+  border-color: black;
+  color: black;
+
+
+
+}
+
+
+.respButn{
+  width: 95%;
+}
+
+
+/* Style for chat.ejs */ 
+
+.chatPage{
+  border-style: solid;
+  border-color: black;
+}
+
+.chatPage{
+  height: 78%;
+
+  display: grid;
+  grid-template-columns: 25% 75%;
+}
+
+
+.usersBox{
+
+  border-style: solid;
+  border-color: white;
+
+}
+
+#chatField{
+  width: 80%;
+  height: 10%;
+}
+
+
+
+
+.meChat{
+  background-color: white;
+  text-align: left;
+  width: 200px;
+  position: relative;
+  left: 1%;
+
+
+
+}
+
+.otherChat{
+  background-color: white;
+  text-align: right;
+  width: 200px;
+  position: relative;
+  left: 80%;
+
+
+}
+
+
+.meName{
+
+    color: black;
+
+}
+
+.anotherName{
+
+  color: black;
+
+}
+
+.meMessage{
+  padding: 8px;
+  color: black;
+
+
+}
+
+
+.anotherMessage{
+   padding: 8px;
+  color: black;
+}
+
+
+@media (max-width: 1370px){
+
+    .meChat{
+      width: 100%;
+      left: 0%;
+      text-align: center;
+    }
+   .otherChat{
+    text-align: center;
+    width: 100%;
+    left: 0%;
+  }
+}
+
+@media (max-width: 875px){
+
+  .card{
+  background-color: #423636;
+  width: 95%;
+  margin-left: 20px;
+  display: grid;
+  grid-template-columns: 50% 50%;
+
+  }
+
+  #buttonSend{
+    font-size: 14px;
+  }
+
+  .refreshButton{
+    font-size: 70%;
+  }
+
+
+  .chatPage{
+    display: grid;
+  grid-template-columns: 100%;
+  }
+  .usersBox{
+    display: none;
+  }
+
+
+
+
+}
+
+@media(max-width: 700px){
+  #back{
+    font-size: 70%;
+  }
+
+}
+
+@media (max-width: 600px){
+
+  .card{
+  background-color: #423636;
+  width: 95%;
+  margin-left: 20px;
+  display: grid;
+  grid-template-columns: 100%;
+
+  }
+
+
+}
+
+
+

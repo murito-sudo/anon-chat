@@ -1,0 +1,11 @@
+This is how the models of the Datbase will be:
+
+1. This One Stores the Users:
+Collection: Users
+{ObjectId(String), username: String, password: String, rooms: [roomObject]}
+
+
+2. This One Stores the rooms:
+Collection: rooms
+{ObjectId(String), roomName: String, roomPassword: String, roomAdmin: String(Id of admin), slots: Integer}
+

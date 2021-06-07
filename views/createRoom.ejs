@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Create A room</title>
+	<link rel="stylesheet" type="text/css" href="rooms.css">
+</head>
+<body>
+
+	<div>
+	<h1 id="title">Create your room</h1>
+	<br>
+
+
+	<h3>Room Name:</h3>
+	<input type="text" name="roomName" placeholder="Room Name" class="finder" id="roomName" maxlength="50">
+	<br>
+	<h3>Description:</h3>
+	<textarea type="text" name="contentText" style="border-radius: 5px;" rows="10" cols="100" id="description" maxlength="100"></textarea>
+	<br>
+
+
+
+
+	<h3>Slots:</h3>
+
+	<select name="slots" id="selector">
+		<option value="2">2</option>
+		<option value="4">4</option>
+		<option value="8">8</option>
+		<option value="16">16</option>
+		<option value="32">32</option>
+		<option value="64">64</option>
+	</select>
+
+	<h3>Password:</h3>
+	<input type="text" name="password" placeholder="Password" class="finder" id="password" maxlength="20">
+	<br>
+	<br>
+	<button type="submit" id="cancel">Cancel</button>
+	<button type="submit" id="create">Create</button> 
+
+
+	</div>
+
+
+
+
+	<script>
+		let roomName = document.getElementById("roomName");
+		let description = document.getElementById("description");
+		let pass = document.getElementById("password");
+		let selector = document.getElementById("selector");
+
+		
+
+		document.getElementById("create").addEventListener("click", function(){
+			let room = roomName.value;
+			let desc = description.value;
+			let password = pass.value;
+			let select = selector.value;
+
+			if(room.length > 0){
+				socket.emit("creatingRoom", {room, desc, password, select});
+          		$('body').load("/myRooms");
+			}
+
+
+
+       		
+        
+           
+        
+        });
+
+
+		document.getElementById("cancel").addEventListener("click", function(){
+          $('body').load("/myRooms");
+       
+        });
+
+
+	</script>
+
+</body>
+</html>
+

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Rooms</title>
+	<link rel="stylesheet" type="text/css" href="rooms.css">
+   <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+     <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
+      integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4="
+      crossorigin="anonymous"
+    ></script>
+</head>
+<body>
+	<div>
+
+	<h1>Welcome Back!</h1>
+
+    <button type="submit" name="other" id="other">See Other Rooms</button>
+  <button type="submit" name="mine" id="seeRooms">See My Rooms</button>
+  <button type="submit" name="favorites">See My Favorites</button>
+
+	
+
+	</div>
+
+    <script>
+
+        
+        document.getElementById("seeRooms").addEventListener("click", function(){
+        
+          $('body').load("/myRooms");
+           
+        });
+
+        document.getElementById("other").addEventListener("click", function(){
+        
+          $('body').load("/other");
+           
+        });
+
+
+     </script>
+
+</body>
+</html>

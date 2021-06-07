@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Chat</title>
+	<link rel="stylesheet" type="text/css" href="rooms.css">
+	<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+
+</head>
+
+<body>
+
+<button type="button" id="back" style="width: 10%">Leave</button>
+<h1 style="display: inline;" id="roomAdmin">Boca sho te amo</h1>
+
+
+
+
+
+<div class="chatPage">
+
+	<div class="usersBox" style="overflow-y:scroll;">
+		<p>Users: </p>
+
+		
+	</div>
+	
+	<div class="chatBox" style="overflow-y:scroll;">
+		<br>
+
+
+	</div>
+
+</div>
+
+		<input type="text" name="chatField" id="chatField" placeholder="Type your message here" style="height: 50px">
+		<button type="button" style="width: 10%" id="buttonSend">Send</button>
+
+
+
+
+
+<script>
+
+	let chatField = document.getElementById("chatField");
+	let userBox = document.getElementsByClassName("usersBox");
+	let chatBox = document.getElementsByClassName("chatBox");
+	let buttonSend = document.getElementById("buttonSend");
+	let back = document.getElementById("back");
+	let roomAdmin = document.getElementById("roomAdmin");
+
+	let newDiv;
+	let newP;
+
+	let meDiv;
+	let otherDiv;
+	let meName;
+	let meMessage;
+	let otherName;
+	let otherMessage;
+
+
+	let roomId = "";
+
+
+	socket.emit("overloadChat");
+
+	socket.once("getId", (roomId) => {
+		roomId = roomId;
+		console.log(roomId);
+		
+		socket.on("loadMessages", (allMessages) =>{
+
+			roomAdmin.innerHTML = "Room Name: " + allMessages.roomName + ", Admin: " + allMessages.admin;
+			for(let x = 0; x < allMessages.allMessages.length; x++){
+				if(allMessages.allMessages[x].user === allMessages.username){
+					meDiv = document.createElement("div");
+					meName = document.createElement("label");
+					meMessage = document.createElement("p");
+					chatBox[0].appendChild(meDiv);
+					meName.innerHTML = "me";
+					meMessage.innerHTML = allMessages.allMessages[x].message;
+					meDiv.appendChild(meName);
+					meDiv.appendChild(meMessage);
+					meDiv.classList.add("meChat");
+					meName.classList.add("meName");
+					meMessage.classList.add("meMessage");
+
+
+
+
+				}else{
+					otherDiv = document.createElement("div");
+					otherName = document.createElement("label");
+					otherMessage = document.createElement("p");
+					chatBox[0].appendChild(otherDiv);
+					otherName.innerHTML = allMessages.allMessages[x].user;
+					otherMessage.innerHTML = allMessages.allMessages[x].message;
+					otherDiv.appendChild(otherName);
+					otherDiv.appendChild(otherMessage);
+					otherDiv.classList.add("otherChat");
+					otherName.classList.add("anotherName");
+					otherMessage.classList.add("anotherMessage");
+
+
+				}
+
+
+			}
+
+
+		});
+
+
+
+
+		socket.once("loadUsers", (users) => {
+			for(let x = 0; x < users.length; x++){
+				newDiv = document.createElement("div");
+				newP = document.createElement("p");
+				newP.innerHTML = users[x];
+				newDiv.appendChild(newP);
+				userBox[0].appendChild(newDiv);
+				newP.classList.add("newUser");
+				newDiv.classList.add("newDiv");
+
+				
+			}
+
+		});
+
+
+	
+		socket.on("newUserJoin", (username) => {
+		newDiv = document.createElement("div");
+		newP = document.createElement("p");
+		newP.innerHTML = username;
+		newDiv.appendChild(newP);
+		userBox[0].appendChild(newDiv);
+		newP.classList.add("newUser");
+		newDiv.classList.add("newDiv");
+		console.log(username + " has entered the chat");
+
+		});
+
+		socket.on("recieveMessage", (value) => {
+			otherDiv = document.createElement("div");
+			otherName = document.createElement("label");
+			otherMessage = document.createElement("p");
+			chatBox[0].appendChild(otherDiv);
+			otherName.innerHTML = value.username;
+			otherMessage.innerHTML = value.chatValue;
+			otherDiv.appendChild(otherName);
+			otherDiv.appendChild(otherMessage);
+			otherDiv.classList.add("otherChat");
+			otherName.classList.add("anotherName");
+			otherMessage.classList.add("anotherMessage");
+
+		});	
+
+
+		socket.on("removeUser", (username) => {
+			let oldP = document.getElementsByClassName("newUser");
+			let oldDiv = document.getElementsByClassName("newDiv");
+
+
+
+
+			for(let x = 0; x < oldP.length; x++){
+
+
+				if(oldP[x].innerHTML === username){
+					userBox[0].removeChild(oldDiv[x]);
+				}
+
+			}			
+
+
+		});
+
+		buttonSend.addEventListener("click", function(e){
+			if(chatField.value !== ""){
+			let value = chatField.value;
+			meDiv = document.createElement("div");
+			meName = document.createElement("label");
+			meMessage = document.createElement("p");
+			chatBox[0].appendChild(meDiv);
+			meName.innerHTML = "me";
+			meMessage.innerHTML = value;
+			meDiv.appendChild(meName);
+			meDiv.appendChild(meMessage);
+			meDiv.classList.add("meChat");
+			meName.classList.add("meName");
+			meMessage.classList.add("meMessage");
+			chatField.value = "";
+
+			
+			socket.emit("overloadMessage", {value, roomId});
+			}
+
+		});
+
+
+		back.addEventListener("click", function(e){
+			let oldDiv = document.getElementsByClassName("newDiv");
+
+				socket.off('recieveMessage');
+				socket.off('newUserJoin');
+				socket.off('loadMessages');
+				$('.usersBox').empty();
+				$('.chatBox').empty();
+
+
+				socket.emit("leaveChat", roomId);
+			
+				$('body').load("/other");
+
+
+		});
+
+	});
+
+
+
+</script>
+
+</body>
+</html>
