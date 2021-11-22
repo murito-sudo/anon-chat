@@ -500,7 +500,7 @@ io.on('connection', function(socket) {
 
 										
 										if(String(data.rooms[x]._id) === roomieId){
-											console.log("Nothing less than greek");
+											
 											let query = "rooms." + x + ".usersOnline";
 											model.updateOne( {username: userAd}
 												, { $set:  { [query]: data.rooms[x].usersOnline - 1} 
@@ -548,7 +548,7 @@ io.on('connection', function(socket) {
 					for(let x = 0; x < getUsers().length; x++){
 						if(getUsers()[x].username === username.username){
 							index = x;
-							console.log("Noouououououououou" + roomId.length);
+							
 							if(roomId.length > 0){
 								// Here we use the same code as the socket.on("leaveChat") since we can't emit to this socket 
 								//Anymore because we disconnected.
@@ -644,5 +644,10 @@ io.on('connection', function(socket) {
 server.listen(3000, function(){
 	console.log("Server running on port 3000");
 });
+
+
+
+													
+
 
 
