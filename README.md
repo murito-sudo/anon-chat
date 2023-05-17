@@ -15,4 +15,4 @@ Database Utilities:
 
 
 
-All the node_modules are introduced inside the node_modules folder, naje sure to initialize mongoDB before running the process
+All the node_modules are introduced inside the node_modules folder, naje sure to initialize mongoDB before running the app
